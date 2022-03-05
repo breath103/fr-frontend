@@ -1,46 +1,27 @@
-import { Component, createResource, createSignal } from 'solid-js';
+import { Component } from 'solid-js';
 
-import logo from './logo.svg';
-import styles from './App.module.css';
+import { Route, Router, Routes } from "solid-app-router";
+import { ProblemShow } from './Routes/ProblemShow';
+import { Home } from './Routes/Home';
 
-import ky from 'ky';
-
-class FrApiClient {
-  private readonly kyClient: typeof ky;
-  constructor() {
-    this.kyClient = ky.extend({
-      prefixUrl: "https://wit1pvu8rb.execute-api.ap-northeast-2.amazonaws.com/prod/",
-      headers: {
-        'x-fr-auth-token': "guest:12345-12345",
-      }
-    });
-  }
-
-  public async getProblem(problemId: string) {
-    return this.kyClient.get(`problems/${problemId}`).json();
-  }
-}
-
-// @TODO - put into Context
-const frApi = new FrApiClient();
-
-const App: Component = () => {
-  const [problemId, setProblemId] = createSignal("4EZNVWEPAWKGY75M");
-  const [problemQuery] = createResource(problemId, async (problemId: string) => {
-    return await frApi.getProblem(problemId);
-  });
+export const App: Component = () => {
   return (
-    <div class={styles.App}>
-      <header class={styles.header}>
-        <h1>Just Fucking Read</h1>        
-      </header>
-      <main>
-        <div>
-          {JSON.stringify(problemQuery())}
-        </div>
-      </main>
-    </div>
+    <Router>
+      <div class="h-full flex flex-col bg-zinc-900 text-gray-100 overflow-auto">
+        <header class="bg-zinc-700 sticky top-0 p-2 text-center">
+          Home
+        </header>
+
+        <main class="flex-auto pt-4 pb-12">
+          <div className="container mx-auto">
+            <Routes>
+              <Route path="/" component={Home} />
+              <Route path="/problems/:problemId" component={ProblemShow} />
+              {/* <Route path="/*all" element={<NotFound />} /> */}
+            </Routes>
+          </div>
+        </main>        
+      </div>
+    </Router>
   );
 };
-
-export default App;
