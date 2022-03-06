@@ -7,8 +7,9 @@ export const ProblemShow: Component = () => {
   const params = useParams();
   const [problemQuery] = createResource(
     params.problemId, 
-    async (problemId: string) => await frApi.getProblem(problemId)
+    async (problemId: string) => await frApi.getProblem.call({ problemId }),
   );
+  
   return <div>
     {problemQuery.loading && <div>Loading...</div>}
     {problemQuery() && (() => {
