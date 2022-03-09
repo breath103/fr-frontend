@@ -9,6 +9,7 @@ export interface RequestOptions {
   body?: { [key: string]: any };
 }
 
+// eslint-disable-next-line no-redeclare
 export interface Response {
   statusCode: number;
   headers: { [key: string]: string };
@@ -32,14 +33,15 @@ export class BaseClient {
     const path = `${options.path.slice(1)}`;
     return this.kyClient(path, {
       method: options.method,
-      searchParams: 
-        Object.keys(options.queryParameters).reduce((acc, key) => {
-          if (options.queryParameters[key] !== undefined) {
-            acc[key] = options.queryParameters[key];
-          }
-          return acc;
-        }, {} as { [key: string]: any }),
-      ...(Object.keys(options.body ?? {}).length > 0 ? { json: options.body } : {}),
+      searchParams: Object.keys(options.queryParameters).reduce((acc, key) => {
+        if (options.queryParameters[key] !== undefined) {
+          acc[key] = options.queryParameters[key];
+        }
+        return acc;
+      }, {} as { [key: string]: any }),
+      ...(Object.keys(options.body ?? {}).length > 0
+        ? { json: options.body }
+        : {}),
     }).json<Data>();
   }
 }
